@@ -1,149 +1,142 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
 <title>JARVIS AI</title>
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;min-height:100vh;background:#07111e;color:#e7f6ff;
-  font-family:Arial,sans-serif;display:flex;justify-content:center;
-  align-items:center;padding:20px
+margin:0;background:#050b18;color:#e8f5ff;
+font-family:Arial,sans-serif;min-height:100vh;
+display:flex;justify-content:center;align-items:center;
 }
-.app{width:100%;max-width:650px;text-align:center}
+.app{width:100%;max-width:650px;padding:22px}
+header{text-align:center;padding:25px 0}
 .logo{
-  width:130px;height:130px;border:2px solid #36c9ff;
-  border-radius:50%;margin:20px auto;display:grid;
-  place-items:center;font-size:48px;color:#36c9ff;
-  box-shadow:0 0 30px #087ca8,inset 0 0 25px #087ca8
+width:115px;height:115px;border-radius:50%;
+border:2px solid #00d9ff;
+margin:auto;display:flex;align-items:center;
+justify-content:center;font-size:37px;
+color:#00d9ff;box-shadow:0 0 35px #00bfff55;
 }
-h1{letter-spacing:7px;color:#42cfff;font-size:36px}
-.subtitle{color:#8caec1;margin-bottom:30px}
-.status{color:#48d9a0;font-size:14px;margin:15px}
+h1{letter-spacing:7px;color:#00d9ff;margin-bottom:5px}
+.status{color:#8ba9bd;font-size:13px}
 .chat{
-  background:#102337;border:1px solid #1d5875;border-radius:16px;
-  padding:18px;min-height:190px;text-align:right;margin-bottom:15px
+height:340px;overflow-y:auto;
+border:1px solid #16405b;border-radius:15px;
+padding:15px;background:#091526;
 }
-.message{padding:12px;margin:8px 0;border-radius:10px;line-height:1.6}
-.jarvis{background:#173b52}
-.user{background:#174e61;text-align:left}
-.controls{display:flex;gap:8px}
+.message{padding:12px;margin:10px 0;
+border-radius:12px;line-height:1.6}
+.bot{background:#102c43;color:#b9ecff}
+.user{background:#123d50;color:white}
+.controls{display:flex;gap:9px;margin-top:15px}
 input{
-  flex:1;min-width:0;padding:15px;border-radius:12px;
-  border:1px solid #287c9d;background:#102337;color:white;font-size:16px
+flex:1;min-width:0;background:#102034;
+border:1px solid #1c5874;border-radius:10px;
+padding:14px;color:white;font-size:16px;
 }
 button{
-  border:0;border-radius:12px;padding:13px 17px;
-  background:#087fa8;color:white;font-size:17px;cursor:pointer
+background:#00bfe9;color:#00121d;border:0;
+border-radius:10px;padding:13px 17px;
+font-weight:bold;font-size:15px;cursor:pointer;
 }
-button:hover{background:#10a8d5}
-.mic{margin-top:12px;background:#17445d}
-.footer{font-size:12px;color:#7896a8;margin-top:25px}
+.mic{width:100%;margin-top:12px;background:#123e58;color:#fff}
+footer{text-align:center;color:#56778c;font-size:12px;margin-top:25px}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="logo">◉</div>
-  <h1>J.A.R.V.I.S</h1>
-  <div class="subtitle">מערכת עוזר אישי חכמה</div>
-  <div class="status" id="status">● המערכת מוכנה</div>
-
-  <div class="chat" id="chat">
-    <div class="message jarvis">
-      שלום. אני JARVIS. כיצד אוכל לסייע לך?
-    </div>
-  </div>
-
-  <div class="controls">
-    <input id="question" placeholder="כתוב לי משהו..." />
-    <button onclick="sendMessage()">שלח</button>
-  </div>
-  <button class="mic" onclick="listen()">🎙️ דבר עם JARVIS</button>
-  <div class="footer">JARVIS Prototype · גרסה ראשונית</div>
+<header>
+<div class="logo">J</div>
+<h1>J.A.R.V.I.S</h1>
+<div class="status" id="status">מערכת פעילה | ממתין לפקודה</div>
+</header>
+<div class="chat" id="chat">
+<div class="message bot">
+שלום. אני JARVIS.<br>
+המערכת מוכנה לפקודות שלך. במה אוכל לעזור?
 </div>
-
+</div>
+<div class="controls">
+<input id="question" placeholder="כתוב פקודה ל-JARVIS...">
+<button onclick="send()">שלח</button>
+</div>
+<button class="mic" onclick="listen()">🎙️ הפעלה קולית</button>
+<footer>JARVIS AI | גרסה ראשונית</footer>
+</div>
 <script>
-const chat = document.getElementById("chat");
-const statusText = document.getElementById("status");
-const input = document.getElementById("question");
+const chat=document.getElementById('chat');
+const status=document.getElementById('status');
 
-function addMessage(text, type){
-  const div = document.createElement("div");
-  div.className = "message " + type;
-  div.textContent = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+function addMessage(text,type){
+const div=document.createElement('div');
+div.className='message '+type;
+div.textContent=text;
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
 }
-
-function reply(text){
-  const q = text.toLowerCase();
-  let answer = "אני כאן ומוכן לעזור. כרגע אני פועל במצב אב טיפוס מקומי.";
-
-  if(q.includes("שלום") || q.includes("היי"))
-    answer = "שלום. טוב לשמוע ממך. איך אוכל לעזור?";
-  else if(q.includes("שמך") || q.includes("מי אתה"))
-    answer = "אני JARVIS, העוזר האישי שלך.";
-  else if(q.includes("שעה"))
-    answer = "השעה המקומית במכשיר היא " +
-      new Date().toLocaleTimeString("he-IL");
-  else if(q.includes("תאריך"))
-    answer = "היום " + new Date().toLocaleDateString("he-IL");
-  else if(q.includes("תודה"))
-    answer = "בשמחה. תמיד לשירותך.";
-  else if(q.includes("להתראות"))
-    answer = "להתראות. אני כאן כשתצטרך אותי.";
-
-  addMessage(answer,"jarvis");
-  speak(answer);
-}
-
-function sendMessage(){
-  const text = input.value.trim();
-  if(!text) return;
-  addMessage(text,"user");
-  input.value = "";
-  reply(text);
-}
-
-input.addEventListener("keydown",e=>{
-  if(e.key==="Enter") sendMessage();
-});
 
 function speak(text){
-  if(!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "he-IL";
-  utterance.rate = 0.9;
-  speechSynthesis.speak(utterance);
+if(!('speechSynthesis' in window))return;
+speechSynthesis.cancel();
+const utterance=new SpeechSynthesisUtterance(text);
+utterance.lang='he-IL';
+utterance.rate=0.95;
+speechSynthesis.speak(utterance);
 }
 
+function answer(q){
+const t=q.toLowerCase();
+if(t.includes('שלום'))return 'שלום לך. שמח לשמוע ממך.';
+if(t.includes('שמך')||t.includes('מי אתה'))return 'אני JARVIS, העוזר האישי שלך.';
+if(t.includes('שעה'))return 'השעה כעת '+new Date().toLocaleTimeString('he-IL');
+if(t.includes('תאריך'))return 'היום '+new Date().toLocaleDateString('he-IL');
+if(t.includes('תודה'))return 'בשמחה. אני כאן בשבילך.';
+return 'קיבלתי את הפקודה: '+q+'. כרגע אני פועל בגרסה ראשונית. חיבור למוח AI מתקדם יתווסף בשלב הבא.';
+}
+
+function send(){
+const input=document.getElementById('question');
+const q=input.value.trim();
+if(!q)return;
+addMessage(q,'user');
+input.value='';
+const a=answer(q);
+setTimeout(()=>{
+addMessage(a,'bot');
+speak(a);
+},300);
+}
+
+document.getElementById('question').addEventListener('keydown',e=>{
+if(e.key==='Enter')send();
+});
+
 function listen(){
-  const Recognition = window.SpeechRecognition ||
-                      window.webkitSpeechRecognition;
-  if(!Recognition){
-    statusText.textContent = "המיקרופון אינו נתמך בדפדפן הזה";
-    return;
-  }
-  const recognition = new Recognition();
-  recognition.lang = "he-IL";
-  recognition.interimResults = false;
-  recognition.onstart = ()=>{
-    statusText.textContent = "● מקשיב לך...";
-  };
-  recognition.onresult = event=>{
-    input.value = event.results[0][0].transcript;
-    sendMessage();
-  };
-  recognition.onerror = ()=>{
-    statusText.textContent = "לא הצלחתי לזהות קול. נסה שוב.";
-  };
-  recognition.onend = ()=>{
-    statusText.textContent = "● המערכת מוכנה";
-  };
-  recognition.start();
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SpeechRecognition){
+addMessage('זיהוי קולי אינו נתמך בדפדפן הזה. נסה Chrome.','bot');
+return;
+}
+const recognition=new SpeechRecognition();
+recognition.lang='he-IL';
+recognition.interimResults=false;
+status.textContent='מקשיב לך עכשיו...';
+recognition.onresult=e=>{
+document.getElementById('question').value=e.results[0][0].transcript;
+status.textContent='הפקודה התקבלה';
+send();
+};
+recognition.onerror=()=>{
+status.textContent='לא הצלחתי לזהות. נסה שוב.';
+};
+recognition.onend=()=>{
+if(status.textContent==='מקשיב לך עכשיו...')status.textContent='מערכת פעילה';
+};
+recognition.start();
 }
 </script>
 </body>
