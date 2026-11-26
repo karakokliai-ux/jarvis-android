@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>JARVIS AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;background:#050b18;color:#e8f5ff;
+font-family:Arial,sans-serif;min-height:100vh;
+display:flex;justify-content:center;align-items:center;
+}
+.app{width:100%;max-width:650px;padding:22px}
+header{text-align:center;padding:25px 0}
+.logo{
+width:100px;height:100px;border-radius:50%;
+border:2px solid #00d9ff;margin:auto;
+display:flex;align-items:center;justify-content:center;
+font-size:37px;color:#00d9ff;
+box-shadow:0 0 35px #00bfff55;
+}
+h1{letter-spacing:7px;color:#00d9ff}
+.status{color:#8ba9bd;font-size:13px}
+.settings{
+background:#102034;border:1px solid #1c5874;
+border-radius:12px;padding:14px;margin:15px 0;
+}
+.settings input,.controls input{
+width:100%;background:#091526;color:white;
+border:1px solid #1c5874;border-radius:10px;
+padding:13px;margin:5px 0;font-size:15px;
+}
+button{
+background:#00bfe9;color:#00121d;border:0;
+border-radius:10px;padding:13px 17px;
+font-weight:bold;font-size:15px;cursor:pointer;
+}
+.settings button{margin-top:8px}
+.chat{
+height:340px;overflow-y:auto;
+border:1px solid #16405b;border-radius:15px;
+padding:15px;background:#091526;
+}
+.message{padding:12px;margin:10px 0;
+border-radius:12px;line-height:1.6;white-space:pre-wrap}
+.bot{background:#102c43;color:#b9ecff}
+.user{background:#123d50;color:white}
+.controls{display:flex;gap:9px;margin-top:15px}
+.controls input{flex:1;min-width:0}
+.mic{width:100%;margin-top:12px;background:#123e58;color:white}
+footer{text-align:center;color:#56778c;font-size:12px;margin-top:25px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="logo">J</div>
+<h1>J.A.R.V.I.S</h1>
+<div class="status" id="status">מערכת פעילה | ממתין לפקודה</div>
+</header>
+
+<div class="settings">
+<strong>⚙️ הגדרות מוח מקומי</strong>
+<input id="apiUrl" value="http://127.0.0.1:8080/v1"
+placeholder="API URL">
+<input id="apiKey" type="password"
+placeholder="API Key (אם הוגדר)">
+<button onclick="saveSettings()">שמור הגדרות</button>
+</div>
+
+<div class="chat" id="chat">
+<div class="message bot">
+שלום. אני JARVIS.
+המוח המקומי מוכן לפקודות שלך.
+במה אוכל לעזור?
+</div>
+</div>
+
+<div class="controls">
+<input id="question" placeholder="כתוב פקודה ל-JARVIS...">
+<button onclick="send()">שלח</button>
+</div>
+
+<button class="mic" onclick="listen()">🎙️ הפעלה קולית</button>
+<footer>JARVIS AI | Local Intelligence</footer>
+</div>
+
+<script>
+const chat=document.getElementById('chat');
+const status=document.getElementById('status');
+
+document.getElementById('apiUrl').value=
+localStorage.getItem('jarvis_api_url') ||
+'http://127.0.0.1:8080/v1';
+
+document.getElementById('apiKey').value=
+localStorage.getItem('jarvis_api_key') || '';
+
+function saveSettings(){
+localStorage.setItem('jarvis_api_url',
+document.getElementById('apiUrl').value.trim());
+localStorage.setItem('jarvis_api_key',
+document.getElementById('apiKey').value.trim());
+status.textContent='ההגדרות נשמרו';
+}
+
+function addMessage(text,type){
+const div=document.createElement('div');
+div.className='message '+type;
+div.textContent=text;
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function speak(text){
+if(!('speechSynthesis' in window))return;
+speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(text);
+u.lang='he-IL';
+u.rate=0.95;
+speechSynthesis.speak(u);
+}
+
+async function send(){
+const input=document.getElementById('question');
+const q=input.value.trim();
+if(!q)return;
+
+addMessage(q,'user');
+input.value='';
+status.textContent='JARVIS חושב...';
+
+try{
+const url=document.getElementById('apiUrl').value.trim();
+const key=document.getElementById('apiKey').value.trim();
+
+if(!url)throw new Error('חסרה כתובת API');
+
+const headers={'Content-Type':'application/json'};
+if(key)headers['Authorization']='Bearer '+key;
+
+const response=await fetch(
+url.replace(/\/+$/,'')+'/chat/completions',
+{
+method:'POST',
+headers:headers,
+body:JSON.stringify({
+model:'local-model',
+messages:[
+{role:'system',content:
+'אתה JARVIS, עוזר אישי חכם. ענה בעברית, בצורה ברורה ומדויקת.'},
+{role:'user',content:q}
+],
+temperature:0.7
+})
+});
+
+if(!response.ok)
+throw new Error('שגיאת שרת: '+response.status);
+
+const data=await response.json();
+const answer=data.choices?.[0]?.message?.content;
+
+if(!answer)throw new Error('לא התקבלה תשובה מהמודל');
+
+addMessage(answer,'bot');
+speak(answer);
+status.textContent='JARVIS פעיל';
+
+}catch(error){
+addMessage('שגיאת חיבור: '+error.message,'bot');
+status.textContent='בעיית חיבור';
+}
+}
+
+document.getElementById('question').addEventListener('keydown',e=>{
+if(e.key==='Enter')send();
+});
+
+function listen(){
+const SR=window.SpeechRecognition||
+window.webkitSpeechRecognition;
+
+if(!SR){
+addMessage('זיהוי קולי אינו נתמך בדפדפן','bot');
+return;
+}
+
+const recognition=new SR();
+recognition.lang='he-IL';
+recognition.interimResults=false;
+status.textContent='מקשיב לך...';
+
+recognition.onresult=e=>{
+document.getElementById('question').value=
+e.results[0][0].transcript;
+send();
+};
+
+recognition.onerror=()=>{
+status.textContent='שגיאה בזיהוי קולי';
+};
+
+recognition.onend=()=>{
+if(status.textContent==='מקשיב לך...')
+status.textContent='מערכת פעילה';
+};
+
+recognition.start();
+}
+</script>
+</body>
+</html>
