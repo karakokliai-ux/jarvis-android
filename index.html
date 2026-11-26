@@ -98,18 +98,56 @@ if(t.includes('תודה'))return 'בשמחה. אני כאן בשבילך.';
 return 'קיבלתי את הפקודה: '+q+'. כרגע אני פועל בגרסה ראשונית. חיבור למוח AI מתקדם יתווסף בשלב הבא.';
 }
 
-function send(){
-const input=document.getElementById('question');
-const q=input.value.trim();
-if(!q)return;
-addMessage(q,'user');
-input.value='';
-const a=answer(q);
-setTimeout(()=>{
-addMessage(a,'bot');
-speak(a);
-},300);
+
+async function send(){
+  const input=document.getElementById('question');
+  const q=input.value.trim();
+  if(!q)return;
+
+  addMessage(q,'user');
+  input.value='';
+  status.textContent='JARVIS חושב...';
+
+  try {
+    let key=localStorage.getItem('jarvis_api_key');
+    if(!key){
+      key=prompt('הכנס מפתח API של PocketPal');
+      if(!key)throw new Error('חסר מפתח API');
+      localStorage.setItem('jarvis_api_key',key);
+    }
+
+    const response=await fetch(
+      'http://127.0.0.1:8080/v1/chat/completions',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':'Bearer '+key
+        },
+        body:JSON.stringify({
+          model:'local-model',
+          messages:[
+            {role:'system',content:'אתה JARVIS, עוזר אישי חכם. ענה בעברית.'},
+            {role:'user',content:q}
+          ]
+        })
+      }
+    );
+
+    if(!response.ok)throw new Error('HTTP '+response.status);
+
+    const data=await response.json();
+    const a=data.choices[0].message.content;
+    addMessage(a,'bot');
+    speak(a);
+    status.textContent='מערכת פעילה';
+
+  } catch(error) {
+    addMessage('שגיאת חיבור: '+error.message,'bot');
+    status.textContent='בעיית חיבור';
+  }
 }
+
 
 document.getElementById('question').addEventListener('keydown',e=>{
 if(e.key==='Enter')send();
