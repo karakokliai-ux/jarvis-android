@@ -1,214 +1,246 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#050b18">
-<title>JARVIS AI</title>
+<meta name="theme-color" content="#020713">
+<title>JARVIS VISION</title>
+
 <style>
 *{box-sizing:border-box}
 body{
-margin:0;background:#050b18;color:#e8f5ff;
-font-family:Arial,sans-serif;min-height:100vh;
-display:flex;justify-content:center;align-items:center;
+ margin:0;background:radial-gradient(ellipse at center,#102c48,#020713 75%);
+ color:#dff8ff;font-family:Arial,sans-serif;
+ min-height:100vh;display:flex;justify-content:center;
 }
-.app{width:100%;max-width:650px;padding:22px}
-header{text-align:center;padding:25px 0}
-.logo{
-width:100px;height:100px;border-radius:50%;
-border:2px solid #00d9ff;margin:auto;
-display:flex;align-items:center;justify-content:center;
-font-size:37px;color:#00d9ff;
-box-shadow:0 0 35px #00bfff55;
+.app{width:100%;max-width:650px;padding:18px}
+header{text-align:center;padding:20px 0}
+h1{letter-spacing:8px;color:#00dfff;
+ text-shadow:0 0 20px #00cfff}
+.status{font-size:13px;color:#76b9d2;margin-top:10px}
+
+.core{
+ width:210px;height:210px;margin:20px auto;
+ border-radius:50%;position:relative;
+ display:flex;align-items:center;justify-content:center;
 }
-h1{letter-spacing:7px;color:#00d9ff}
-.status{color:#8ba9bd;font-size:13px}
-.settings{
-background:#102034;border:1px solid #1c5874;
-border-radius:12px;padding:14px;margin:15px 0;
+.core:before,.core:after{
+ content:"";position:absolute;border-radius:50%;
+ border:2px solid #00dfff;
+ inset:8px;box-shadow:0 0 25px #00cfff66;
+ animation:spin 9s linear infinite;
 }
-.settings input,.controls input{
-width:100%;background:#091526;color:white;
-border:1px solid #1c5874;border-radius:10px;
-padding:13px;margin:5px 0;font-size:15px;
+.core:after{
+ inset:25px;border-color:#1685ff;
+ border-style:dashed;animation:spin 15s linear infinite reverse;
+}
+.orb{
+ width:105px;height:105px;border-radius:50%;
+ background:radial-gradient(circle,#b9faff,#00a8e9 35%,#06345d 75%);
+ box-shadow:0 0 35px #00dfff,0 0 75px #007bff;
+ animation:pulse 3s infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{
+ 0%,100%{transform:scale(.92);filter:brightness(.9)}
+ 50%{transform:scale(1.08);filter:brightness(1.5)}
+}
+.core.listening .orb{background:radial-gradient(circle,#fff,#00ffcc 40%,#005b64)}
+.core.thinking .orb{background:radial-gradient(circle,#fff,#a35bff 40%,#302060)}
+
+.panel{
+ background:#081a2cdd;border:1px solid #12618a;
+ border-radius:16px;padding:15px;margin:14px 0;
+ box-shadow:0 0 20px #008cff12;
+}
+.chat{
+ height:250px;overflow-y:auto;padding:8px;
+}
+.message{
+ padding:12px;margin:10px 0;border-radius:12px;
+ line-height:1.6;white-space:pre-wrap;
+ overflow-wrap:anywhere;
+}
+.bot{background:#10334a;color:#c9f4ff}
+.user{background:#12485a;color:white}
+.controls{display:flex;gap:8px;margin-top:12px}
+input{
+ background:#071323;color:white;border:1px solid #12618a;
+ border-radius:10px;padding:14px;font-size:15px;
+ width:100%;min-width:0;
 }
 button{
-background:#00bfe9;color:#00121d;border:0;
-border-radius:10px;padding:13px 17px;
-font-weight:bold;font-size:15px;cursor:pointer;
+ border:0;border-radius:10px;padding:13px 17px;
+ background:#00c8ed;color:#00121e;
+ font-weight:bold;font-size:14px;cursor:pointer;
 }
-.settings button{margin-top:8px}
-.chat{
-height:340px;overflow-y:auto;
-border:1px solid #16405b;border-radius:15px;
-padding:15px;background:#091526;
+button:active{transform:scale(.96)}
+.controls button{flex-shrink:0}
+.mic{
+ width:100%;margin-top:10px;
+ background:#123d59;color:#dffaff;
+ border:1px solid #00bde8;
 }
-.message{padding:12px;margin:10px 0;
-border-radius:12px;line-height:1.6;white-space:pre-wrap}
-.bot{background:#102c43;color:#b9ecff}
-.user{background:#123d50;color:white}
-.controls{display:flex;gap:9px;margin-top:15px}
-.controls input{flex:1;min-width:0}
-.mic{width:100%;margin-top:12px;background:#123e58;color:white}
-footer{text-align:center;color:#56778c;font-size:12px;margin-top:25px}
+.settings input{margin-top:10px}
+.settings button{margin-top:10px}
+footer{text-align:center;color:#47758e;font-size:12px;padding:20px}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header>
-<div class="logo">J</div>
+<div class="status" id="status">SYSTEM ONLINE</div>
+<div class="core" id="core"><div class="orb"></div></div>
 <h1>J.A.R.V.I.S</h1>
-<div class="status" id="status">מערכת פעילה | ממתין לפקודה</div>
+<div style="color:#62a8c5;font-size:12px;letter-spacing:3px">
+VISION INTELLIGENCE SYSTEM
+</div>
 </header>
 
-<div class="settings">
-<strong>⚙️ הגדרות מוח מקומי</strong>
-<input id="apiUrl" value="http://127.0.0.1:8080/v1"
-placeholder="API URL">
-<input id="apiKey" type="password"
-placeholder="API Key (אם הוגדר)">
-<button onclick="saveSettings()">שמור הגדרות</button>
-</div>
-
+<div class="panel">
+<strong>CONVERSATION</strong>
 <div class="chat" id="chat">
 <div class="message bot">
 שלום. אני JARVIS.
-המוח המקומי מוכן לפקודות שלך.
-במה אוכל לעזור?
+מערכת הבינה המקומית מוכנה.
+ממתין להוראות שלך.
 </div>
 </div>
 
 <div class="controls">
-<input id="question" placeholder="כתוב פקודה ל-JARVIS...">
-<button onclick="send()">שלח</button>
+<input id="question" placeholder="דבר אליי...">
+<button id="sendBtn" onclick="send()">שלח</button>
+</div>
+<button class="mic" onclick="listen()">🎙️ הפעלה קולית</button>
 </div>
 
-<button class="mic" onclick="listen()">🎙️ הפעלה קולית</button>
-<footer>JARVIS AI | Local Intelligence</footer>
+<div class="panel settings">
+<strong>⚙️ LOCAL BRAIN SETTINGS</strong>
+<input id="apiUrl" placeholder="API URL">
+<input id="apiKey" type="password" placeholder="API KEY">
+<button onclick="saveSettings()">שמור הגדרות</button>
+</div>
+
+<footer>JARVIS VISION 1.2 | PERSONAL AI</footer>
 </div>
 
 <script>
 const chat=document.getElementById('chat');
 const status=document.getElementById('status');
+const core=document.getElementById('core');
 
-document.getElementById('apiUrl').value=
-localStorage.getItem('jarvis_api_url') ||
-'http://127.0.0.1:8080/v1';
-
-document.getElementById('apiKey').value=
-localStorage.getItem('jarvis_api_key') || '';
+apiUrl.value=localStorage.getItem('jarvis_api_url')
+ ||'http://127.0.0.1:8080/v1';
+apiKey.value=localStorage.getItem('jarvis_api_key')||'';
 
 function saveSettings(){
-localStorage.setItem('jarvis_api_url',
-document.getElementById('apiUrl').value.trim());
-localStorage.setItem('jarvis_api_key',
-document.getElementById('apiKey').value.trim());
-status.textContent='ההגדרות נשמרו';
+ localStorage.setItem('jarvis_api_url',apiUrl.value.trim());
+ localStorage.setItem('jarvis_api_key',apiKey.value.trim());
+ status.textContent='SETTINGS SAVED';
 }
 
 function addMessage(text,type){
-const div=document.createElement('div');
-div.className='message '+type;
-div.textContent=text;
-chat.appendChild(div);
-chat.scrollTop=chat.scrollHeight;
+ const div=document.createElement('div');
+ div.className='message '+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+function setMode(mode,message){
+ core.className='core '+mode;
+ status.textContent=message;
 }
 
 function speak(text){
-if(!('speechSynthesis' in window))return;
-speechSynthesis.cancel();
-const u=new SpeechSynthesisUtterance(text);
-u.lang='he-IL';
-u.rate=0.95;
-speechSynthesis.speak(u);
+ if(!('speechSynthesis'in window))return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='he-IL';
+ u.rate=.95;
+ speechSynthesis.speak(u);
 }
 
 async function send(){
-const input=document.getElementById('question');
-const q=input.value.trim();
-if(!q)return;
+ const q=document.getElementById('question').value.trim();
+ if(!q)return;
 
-addMessage(q,'user');
-input.value='';
-status.textContent='JARVIS חושב...';
+ addMessage(q,'user');
+ document.getElementById('question').value='';
+ setMode('thinking','PROCESSING REQUEST...');
 
-try{
-const url=document.getElementById('apiUrl').value.trim();
-const key=document.getElementById('apiKey').value.trim();
+ try{
+ const url=apiUrl.value.trim();
+ const key=apiKey.value.trim();
+ if(!url)throw new Error('חסרה כתובת API');
 
-if(!url)throw new Error('חסרה כתובת API');
+ const headers={'Content-Type':'application/json'};
+ if(key)headers.Authorization='Bearer '+key;
 
-const headers={'Content-Type':'application/json'};
-if(key)headers['Authorization']='Bearer '+key;
+ const response=await fetch(
+ url.replace(/\/+$/,'')+'/chat/completions',
+ {
+ method:'POST',
+ headers,
+ body:JSON.stringify({
+ model:'local-model',
+ messages:[
+ {role:'system',content:
+ 'אתה JARVIS, עוזר אישי חכם. ענה בעברית. היה מדויק, ברור ומועיל.'},
+ {role:'user',content:q}
+ ],
+ temperature:.7
+ })
+ });
 
-const response=await fetch(
-url.replace(/\/+$/,'')+'/chat/completions',
-{
-method:'POST',
-headers:headers,
-body:JSON.stringify({
-model:'local-model',
-messages:[
-{role:'system',content:
-'אתה JARVIS, עוזר אישי חכם. ענה בעברית, בצורה ברורה ומדויקת.'},
-{role:'user',content:q}
-],
-temperature:0.7
-})
-});
+ if(!response.ok)throw new Error('HTTP '+response.status);
 
-if(!response.ok)
-throw new Error('שגיאת שרת: '+response.status);
+ const data=await response.json();
+ const answer=data.choices?.[0]?.message?.content;
+ if(!answer)throw new Error('לא התקבלה תשובה');
 
-const data=await response.json();
-const answer=data.choices?.[0]?.message?.content;
+ addMessage(answer,'bot');
+ setMode('','SYSTEM ONLINE');
+ speak(answer);
 
-if(!answer)throw new Error('לא התקבלה תשובה מהמודל');
-
-addMessage(answer,'bot');
-speak(answer);
-status.textContent='JARVIS פעיל';
-
-}catch(error){
-addMessage('שגיאת חיבור: '+error.message,'bot');
-status.textContent='בעיית חיבור';
-}
+ }catch(e){
+ addMessage('שגיאת חיבור: '+e.message,'bot');
+ setMode('','CONNECTION ERROR');
+ }
 }
 
 document.getElementById('question').addEventListener('keydown',e=>{
-if(e.key==='Enter')send();
+ if(e.key==='Enter')send();
 });
 
 function listen(){
-const SR=window.SpeechRecognition||
-window.webkitSpeechRecognition;
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){
+ addMessage('זיהוי קולי לא נתמך בדפדפן זה','bot');
+ return;
+ }
 
-if(!SR){
-addMessage('זיהוי קולי אינו נתמך בדפדפן','bot');
-return;
-}
+ const r=new SR();
+ r.lang='he-IL';
+ r.interimResults=false;
+ setMode('listening','LISTENING...');
 
-const recognition=new SR();
-recognition.lang='he-IL';
-recognition.interimResults=false;
-status.textContent='מקשיב לך...';
-
-recognition.onresult=e=>{
-document.getElementById('question').value=
-e.results[0][0].transcript;
-send();
-};
-
-recognition.onerror=()=>{
-status.textContent='שגיאה בזיהוי קולי';
-};
-
-recognition.onend=()=>{
-if(status.textContent==='מקשיב לך...')
-status.textContent='מערכת פעילה';
-};
-
-recognition.start();
+ r.onresult=e=>{
+ document.getElementById('question').value=
+ e.results[0][0].transcript;
+ send();
+ };
+ r.onerror=()=>{
+ setMode('','VOICE ERROR');
+ };
+ r.onend=()=>{
+ if(core.classList.contains('listening'))
+ setMode('','SYSTEM ONLINE');
+ };
+ r.start();
 }
 </script>
 </body>
