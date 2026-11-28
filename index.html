@@ -533,5 +533,37 @@ $('mic').addEventListener('click', () => {
   }
 });
 </script>
+  
+<script>
+const gravisOriginalSend = window.send;
+
+async function gravisConnectGroq(question) {
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: [
+        {
+          role: "system",
+          content: "אתה GRAVIS, עוזר אישי חכם. ענה בעברית."
+        },
+        {
+          role: "user",
+          content: question
+        }
+      ]
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || data.error || "Connection error");
+  }
+
+  return data.choices[0].message.content;
+}
+</script>
+</body>
 </body>
 </html>
