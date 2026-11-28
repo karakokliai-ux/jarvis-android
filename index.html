@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -10,338 +11,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Heebo:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --cyan: #00eaff;
-  --blue: #087dff;
-  --bg: #030914;
-  --panel: rgba(4, 24, 43, .72);
-  --line: rgba(0, 225, 255, .25);
+  --cyan:#00eaff;
+  --blue:#087dff;
+  --bg:#030914;
+  --panel:rgba(4,24,43,.72);
+  --line:rgba(0,225,255,.25);
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: #d9faff;
-  background:
-    radial-gradient(ellipse at 50% 42%, #07304b 0%, #061526 35%, #020711 78%);
-  font-family: 'Heebo', sans-serif;
-  overflow-x: hidden;
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:#d9faff;
+ background:radial-gradient(ellipse at 50% 42%,#07304b 0%,#061526 35%,#020711 78%);
+ font-family:'Heebo',sans-serif;overflow-x:hidden;
 }
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: .17;
-  background-image:
-    linear-gradient(rgba(0,234,255,.13) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,234,255,.13) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: linear-gradient(to bottom, black, transparent 90%);
+body::before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;
+ background-image:linear-gradient(rgba(0,234,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(0,234,255,.13) 1px,transparent 1px);
+ background-size:34px 34px;
+ mask-image:linear-gradient(to bottom,black,transparent 90%);
 }
-
-.scanlines {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 10;
-  opacity: .08;
-  background: repeating-linear-gradient(
-    transparent 0px,
-    transparent 3px,
-    #00dfff 4px
-  );
+.scanlines{
+ position:fixed;inset:0;pointer-events:none;z-index:10;opacity:.08;
+ background:repeating-linear-gradient(transparent 0px,transparent 3px,#00dfff 4px);
 }
-
-.app {
-  width: min(100%, 560px);
-  min-height: 100vh;
-  margin: auto;
-  padding: 22px 18px 30px;
-  position: relative;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 15px;
-}
-
-.brand {
-  font-family: Orbitron, sans-serif;
-  font-size: 23px;
-  letter-spacing: 4px;
-  color: var(--cyan);
-  text-shadow: 0 0 18px #00cfff;
-}
-
-.brand small {
-  display: block;
-  font: 10px Orbitron, sans-serif;
-  letter-spacing: 3px;
-  color: #75aebe;
-  margin-top: 5px;
-}
-
-.status {
-  font: 10px Orbitron, sans-serif;
-  color: #65ffbd;
-  letter-spacing: 1px;
-}
-
-.status i {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #35ff9b;
-  box-shadow: 0 0 10px #35ff9b;
-  margin-left: 6px;
-}
-
-.clock {
-  text-align: center;
-  margin-top: 23px;
-  font: 13px Orbitron, sans-serif;
-  color: #72b9ca;
-  letter-spacing: 2px;
-}
-
-.core-wrap {
-  height: 310px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.core {
-  width: 174px;
-  height: 174px;
-  position: relative;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: radial-gradient(circle, #b9ffff 0%, #25dfff 8%, #087dba 23%, #062c55 48%, #031322 68%);
-  box-shadow:
-    0 0 22px #00dfff,
-    0 0 65px rgba(0,205,255,.65),
-    inset 0 0 28px #00bfff;
-  animation: pulse 3s ease-in-out infinite;
-}
-
-.core::before, .core::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  inset: -17px;
-  border-top-color: var(--cyan);
-  border-bottom-color: var(--blue);
-  animation: spin 7s linear infinite;
-}
-
-.core::after {
-  inset: -31px;
-  border: 1px dashed rgba(0,234,255,.7);
-  animation: spin 13s linear infinite reverse;
-}
-
-.core-inner {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid rgba(207,255,255,.9);
-  box-shadow: 0 0 24px #00eaff, inset 0 0 22px #00eaff;
-  display: grid;
-  place-items: center;
-  color: white;
-  font: 22px Orbitron, sans-serif;
-  text-shadow: 0 0 15px white;
-}
-
-.orbit {
-  position: absolute;
-  width: 265px;
-  height: 265px;
-  border: 1px solid rgba(0,210,255,.35);
-  border-radius: 50%;
-  transform: rotateX(67deg);
-  box-shadow: 0 0 20px rgba(0,200,255,.2);
-}
-
-.orbit.two {
-  width: 300px;
-  height: 300px;
-  transform: rotateX(67deg) rotate(65deg);
-  border-style: dashed;
-}
-
-.core-wrap.listening .core {
-  animation: listen .65s ease-in-out infinite alternate;
-}
-
-.core-wrap.listening .core::before {
-  border-top-color: #fff;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-@keyframes listen {
-  from { transform: scale(1); filter: brightness(1); }
-  to { transform: scale(1.15); filter: brightness(1.7); }
-}
-
-.center-label {
-  position: absolute;
-  bottom: 13px;
-  text-align: center;
-  width: 100%;
-  font: 11px Orbitron, sans-serif;
-  letter-spacing: 3px;
-  color: var(--cyan);
-  text-shadow: 0 0 12px var(--cyan);
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 0 22px rgba(0,180,255,.07);
-  backdrop-filter: blur(10px);
-}
-
-.panel-title {
-  font: 10px Orbitron, sans-serif;
-  color: #64cfe3;
-  letter-spacing: 2px;
-  margin-bottom: 13px;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
-  margin-bottom: 15px;
-}
-
-.metric {
-  text-align: center;
-  background: rgba(0,160,220,.07);
-  border: 1px solid rgba(0,210,255,.13);
-  border-radius: 8px;
-  padding: 12px 4px;
-}
-
-.metric strong {
-  display: block;
-  font: 16px Orbitron, sans-serif;
-  color: var(--cyan);
-  margin-bottom: 5px;
-}
-
-.metric span {
-  font-size: 10px;
-  color: #83aebc;
-}
-
-.chat {
-  margin-top: 15px;
-}
-
-.messages {
-  height: 155px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 4px 0 12px;
-}
-
-.message {
-  max-width: 88%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.message.ai {
-  align-self: flex-start;
-  background: rgba(0,190,230,.12);
-  border: 1px solid rgba(0,220,255,.2);
-}
-
-.message.user {
-  align-self: flex-end;
-  background: rgba(0,95,180,.25);
-  border: 1px solid rgba(0,150,255,.25);
-}
-
-.input-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-input {
-  min-width: 0;
-  flex: 1;
-  background: rgba(0,10,25,.8);
-  color: white;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 13px;
-  font: 13px Heebo, sans-serif;
-  outline: none;
-}
-
-input:focus { border-color: var(--cyan); }
-
-button {
-  border: 1px solid rgba(0,230,255,.6);
-  color: var(--cyan);
-  background: rgba(0,150,210,.13);
-  border-radius: 8px;
-  padding: 0 15px;
-  font: 12px Heebo, sans-serif;
-  cursor: pointer;
-}
-
-button:active { background: rgba(0,220,255,.3); }
-
-.mic {
-  width: 100%;
-  margin-top: 12px;
-  height: 48px;
-  font: 12px Orbitron, sans-serif;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, rgba(0,100,180,.2), rgba(0,220,255,.15));
-  box-shadow: 0 0 18px rgba(0,210,255,.12);
-}
-
-footer {
-  text-align: center;
-  margin-top: 20px;
-  color: #477b8c;
-  font: 9px Orbitron, sans-serif;
-  letter-spacing: 2px;
-}
-
-@media (max-width: 380px) {
-  .core-wrap { height: 280px; }
-  .core { width: 150px; height: 150px; }
-  .orbit { width: 230px; height: 230px; }
-  .orbit.two { width: 260px; height: 260px; }
-}
+.app{width:min(100%,560px);min-height:100vh;margin:auto;padding:22px 18px 30px;position:relative}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:15px}
+.brand{font-family:Orbitron,sans-serif;font-size:23px;letter-spacing:4px;color:var(--cyan);text-shadow:0 0 18px #00cfff}
+.brand small{display:block;font:10px Orbitron,sans-serif;letter-spacing:3px;color:#75aebe;margin-top:5px}
+.status{font:10px Orbitron,sans-serif;color:#65ffbd;letter-spacing:1px}
+.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#35ff9b;box-shadow:0 0 10px #35ff9b;margin-left:6px}
+.clock{text-align:center;margin-top:23px;font:13px Orbitron,sans-serif;color:#72b9ca;letter-spacing:2px}
+.core-wrap{height:310px;display:flex;justify-content:center;align-items:center;position:relative}
+.core{width:174px;height:174px;position:relative;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#b9ffff 0%,#25dfff 8%,#087dba 23%,#062c55 48%,#031322 68%);box-shadow:0 0 22px #00dfff,0 0 65px rgba(0,205,255,.65),inset 0 0 28px #00bfff;animation:pulse 3s ease-in-out infinite}
+.core::before,.core::after{content:"";position:absolute;border-radius:50%;border:2px solid transparent;inset:-17px;border-top-color:var(--cyan);border-bottom-color:var(--blue);animation:spin 7s linear infinite}
+.core::after{inset:-31px;border:1px dashed rgba(0,234,255,.7);animation:spin 13s linear infinite reverse}
+.core-inner{width:80px;height:80px;border-radius:50%;border:2px solid rgba(207,255,255,.9);box-shadow:0 0 24px #00eaff,inset 0 0 22px #00eaff;display:grid;place-items:center;color:white;font:22px Orbitron,sans-serif;text-shadow:0 0 15px white}
+.orbit{position:absolute;width:265px;height:265px;border:1px solid rgba(0,210,255,.35);border-radius:50%;transform:rotateX(67deg);box-shadow:0 0 20px rgba(0,200,255,.2)}
+.orbit.two{width:300px;height:300px;transform:rotateX(67deg) rotate(65deg);border-style:dashed}
+.core-wrap.listening .core{animation:listen .65s ease-in-out infinite alternate}
+.core-wrap.listening .core::before{border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes listen{from{transform:scale(1);filter:brightness(1)}to{transform:scale(1.15);filter:brightness(1.7)}}
+.center-label{position:absolute;bottom:13px;text-align:center;width:100%;font:11px Orbitron,sans-serif;letter-spacing:3px;color:var(--cyan);text-shadow:0 0 12px var(--cyan)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 0 22px rgba(0,180,255,.07);backdrop-filter:blur(10px)}
+.panel-title{font:10px Orbitron,sans-serif;color:#64cfe3;letter-spacing:2px;margin-bottom:13px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
+.metric{text-align:center;background:rgba(0,160,220,.07);border:1px solid rgba(0,210,255,.13);border-radius:8px;padding:12px 4px}
+.metric strong{display:block;font:16px Orbitron,sans-serif;color:var(--cyan);margin-bottom:5px}
+.metric span{font-size:10px;color:#83aebc}
+.chat{margin-top:15px}
+.messages{height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0 12px}
+.message{max-width:88%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.message.ai{align-self:flex-start;background:rgba(0,190,230,.12);border:1px solid rgba(0,220,255,.2)}
+.message.user{align-self:flex-end;background:rgba(0,95,180,.25);border:1px solid rgba(0,150,255,.25)}
+.input-row{display:flex;gap:8px;margin-top:10px}
+input{min-width:0;flex:1;background:rgba(0,10,25,.8);color:white;border:1px solid var(--line);border-radius:8px;padding:13px;font:13px Heebo,sans-serif;outline:none}
+input:focus{border-color:var(--cyan)}
+button{border:1px solid rgba(0,230,255,.6);color:var(--cyan);background:rgba(0,150,210,.13);border-radius:8px;padding:0 15px;font:12px Heebo,sans-serif;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+button:active{background:rgba(0,220,255,.3)}
+.mic{width:100%;margin-top:12px;height:48px;font:12px Orbitron,sans-serif;letter-spacing:2px;background:linear-gradient(90deg,rgba(0,100,180,.2),rgba(0,220,255,.15));box-shadow:0 0 18px rgba(0,210,255,.12)}
+footer{text-align:center;margin-top:20px;color:#477b8c;font:9px Orbitron,sans-serif;letter-spacing:2px}
+@media(max-width:380px){.core-wrap{height:280px}.core{width:150px;height:150px}.orbit{width:230px;height:230px}.orbit.two{width:260px;height:260px}}
 </style>
 </head>
 
@@ -349,221 +80,221 @@ footer {
 <div class="scanlines"></div>
 
 <main class="app">
-  <header>
-    <div class="brand">
-      GRAVIS
-      <small>PERSONAL AI SYSTEM</small>
-    </div>
-    <div class="status"><i></i> SYSTEM ONLINE</div>
-  </header>
+<header>
+ <div class="brand">GRAVIS<small>PERSONAL AI SYSTEM</small></div>
+ <div class="status"><i></i> SYSTEM ONLINE</div>
+</header>
 
-  <div class="clock" id="clock">00:00:00</div>
+<div class="clock" id="clock">00:00:00</div>
 
-  <section class="core-wrap" id="coreWrap">
-    <div class="orbit"></div>
-    <div class="orbit two"></div>
-    <div class="core">
-      <div class="core-inner">G</div>
-    </div>
-    <div class="center-label" id="coreLabel">AWAITING COMMAND</div>
-  </section>
+<section class="core-wrap" id="coreWrap">
+ <div class="orbit"></div>
+ <div class="orbit two"></div>
+ <div class="core"><div class="core-inner">G</div></div>
+ <div class="center-label" id="coreLabel">AWAITING COMMAND</div>
+</section>
 
-  <section class="metrics">
-    <div class="metric">
-      <strong id="battery">--</strong>
-      <span>BATTERY</span>
-    </div>
-    <div class="metric">
-      <strong id="network">--</strong>
-      <span>NETWORK</span>
-    </div>
-    <div class="metric">
-      <strong id="system">READY</strong>
-      <span>CORE STATUS</span>
-    </div>
-  </section>
+<section class="metrics">
+ <div class="metric"><strong id="battery">--</strong><span>BATTERY</span></div>
+ <div class="metric"><strong id="network">--</strong><span>NETWORK</span></div>
+ <div class="metric"><strong id="system">READY</strong><span>CORE STATUS</span></div>
+</section>
 
-  <section class="panel">
-    <div class="panel-title">SYSTEM TELEMETRY</div>
-    <div style="font-size:12px;color:#a5d8e4;line-height:1.9">
-      <div>› Neural interface <span style="color:#57ffb2">ACTIVE</span></div>
-      <div>› Voice module <span id="voiceStatus" style="color:#57ffb2">STANDBY</span></div>
-      <div>› AI connection <span style="color:#ffc66b">NOT CONNECTED</span></div>
-    </div>
-  </section>
+<section class="panel">
+ <div class="panel-title">SYSTEM TELEMETRY</div>
+ <div style="font-size:12px;color:#a5d8e4;line-height:1.9">
+  <div>› Neural interface <span style="color:#57ffb2">ACTIVE</span></div>
+  <div>› Voice module <span id="voiceStatus" style="color:#57ffb2">STANDBY</span></div>
+  <div>› AI connection <span id="aiStatus" style="color:#ffc66b">NOT CONNECTED</span></div>
+ </div>
+</section>
 
-  <section class="panel chat">
-    <div class="panel-title">GRAVIS / COMMUNICATION</div>
-    <div class="messages" id="messages">
-      <div class="message ai">
-        שלום. אני GRAVIS. הממשק מוכן לפקודה שלך.
-      </div>
-    </div>
+<section class="panel chat">
+ <div class="panel-title">GRAVIS / COMMUNICATION</div>
+ <div class="messages" id="messages">
+  <div class="message ai">שלום. אני GRAVIS. הממשק מוכן לפקודה שלך.</div>
+ </div>
+ <div class="input-row">
+  <input id="command" placeholder="כתוב פקודה..." autocomplete="off">
+  <button id="send">שלח</button>
+ </div>
+ <button class="mic" id="mic">◉ ACTIVATE VOICE</button>
+</section>
 
-    <div class="input-row">
-      <input id="command" placeholder="כתוב פקודה..." autocomplete="off">
-      <button id="send">שלח</button>
-    </div>
-
-    <button class="mic" id="mic">◉ ACTIVATE VOICE</button>
-  </section>
-
-  <footer>GRAVIS AI // INTERFACE VERSION 2.0</footer>
+<footer>GRAVIS AI // INTERFACE VERSION 2.0</footer>
 </main>
 
 <script>
 const $ = id => document.getElementById(id);
 
-function updateClock() {
-  $('clock').textContent = new Date().toLocaleTimeString('he-IL');
+const conversation = [
+ {
+  role:"system",
+  content:"אתה GRAVIS, עוזר אישי חכם בסגנון JARVIS. דבר בעברית, היה מדויק, מועיל וידידותי. שמור על הקשר השיחה."
+ }
+];
+
+function updateClock(){
+ $('clock').textContent=new Date().toLocaleTimeString('he-IL');
 }
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 
-if (navigator.getBattery) {
-  navigator.getBattery().then(b => {
-    function showBattery() {
-      $('battery').textContent = Math.round(b.level * 100) + '%';
-    }
-    showBattery();
-    b.addEventListener('levelchange', showBattery);
-  });
+if(navigator.getBattery){
+ navigator.getBattery().then(b=>{
+  function showBattery(){
+   $('battery').textContent=Math.round(b.level*100)+'%';
+  }
+  showBattery();
+  b.addEventListener('levelchange',showBattery);
+ }).catch(()=>{$('battery').textContent='N/A'});
 }
 
-function updateNetwork() {
-  const online = navigator.onLine;
-  $('network').textContent = online ? 'ONLINE' : 'OFFLINE';
+function updateNetwork(){
+ $('network').textContent=navigator.onLine?'ONLINE':'OFFLINE';
 }
-window.addEventListener('online', updateNetwork);
-window.addEventListener('offline', updateNetwork);
+window.addEventListener('online',updateNetwork);
+window.addEventListener('offline',updateNetwork);
 updateNetwork();
 
-function addMessage(text, type) {
-  const el = document.createElement('div');
-  el.className = 'message ' + type;
-  el.textContent = text;
-  $('messages').appendChild(el);
-  $('messages').scrollTop = $('messages').scrollHeight;
+function addMessage(text,type){
+ const el=document.createElement('div');
+ el.className='message '+type;
+ el.textContent=text;
+ $('messages').appendChild(el);
+ $('messages').scrollTop=$('messages').scrollHeight;
 }
 
-function replyTo(text) {
-  const t = text.toLowerCase();
-  if (t.includes('שלום') || t.includes('היי')) {
-    return 'שלום. אני כאן ומוכן לפעולה.';
-  }
-  if (t.includes('שעה')) {
-    return 'השעה כעת ' + new Date().toLocaleTimeString('he-IL');
-  }
-  if (t.includes('תאריך')) {
-    return 'היום ' + new Date().toLocaleDateString('he-IL');
-  }
-  if (t.includes('מי אתה')) {
-    return 'אני GRAVIS. ממשק העוזר האישי שלך.';
-  }
-  return 'קיבלתי את הפקודה: "' + text + '". מנוע הבינה המלאכותית עדיין לא חובר לממשק.';
+function setStatus(text,color){
+ $('aiStatus').textContent=text;
+ $('aiStatus').style.color=color;
 }
 
-function sendMessage() {
-  const input = $('command');
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage(text, 'user');
-  input.value = '';
-
-  $('system').textContent = 'PROCESSING';
-  $('coreLabel').textContent = 'PROCESSING COMMAND';
-
-  setTimeout(() => {
-    addMessage(replyTo(text), 'ai');
-    $('system').textContent = 'READY';
-    $('coreLabel').textContent = 'AWAITING COMMAND';
-  }, 500);
+function speak(text){
+ if(!window.speechSynthesis)return;
+ window.speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance(text);
+ utterance.lang='he-IL';
+ utterance.rate=1;
+ window.speechSynthesis.speak(utterance);
 }
 
-$('send').addEventListener('click', sendMessage);
-$('command').addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendMessage();
+async function sendMessage(){
+ const input=$('command');
+ const text=input.value.trim();
+ if(!text)return;
+
+ addMessage(text,'user');
+ input.value='';
+
+ $('system').textContent='PROCESSING';
+ $('coreLabel').textContent='PROCESSING COMMAND';
+ $('send').disabled=true;
+ $('mic').disabled=true;
+ setStatus('CONNECTING','#ffc66b');
+
+ conversation.push({role:'user',content:text});
+
+ const loading=addMessage('GRAVIS מעבד את הבקשה...','ai');
+
+ try{
+  const response=await fetch('/api/chat',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({messages:conversation})
+  });
+
+  const data=await response.json();
+
+  if(!response.ok){
+   throw new Error(
+    typeof data.error==='string'
+     ?data.error
+     :data.error?.message||'HTTP '+response.status
+   );
+  }
+
+  const answer=data.choices?.[0]?.message?.content;
+
+  if(!answer)throw new Error('לא התקבלה תשובה מהשרת');
+
+  loading.remove();
+  conversation.push({role:'assistant',content:answer});
+  addMessage(answer,'ai');
+  speak(answer);
+
+  setStatus('CONNECTED','#57ffb2');
+  $('system').textContent='READY';
+  $('coreLabel').textContent='AWAITING COMMAND';
+
+ }catch(error){
+  loading.remove();
+  conversation.pop();
+
+  addMessage('שגיאת חיבור: '+error.message,'ai');
+  setStatus('ERROR','#ff7777');
+  $('system').textContent='ERROR';
+  $('coreLabel').textContent='CONNECTION ERROR';
+
+ }finally{
+  $('send').disabled=false;
+  $('mic').disabled=false;
+ }
+}
+
+$('send').addEventListener('click',sendMessage);
+
+$('command').addEventListener('keydown',e=>{
+ if(e.key==='Enter')sendMessage();
 });
 
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechRecognition=
+ window.SpeechRecognition||window.webkitSpeechRecognition;
 
 let recognition;
 
-if (SpeechRecognition) {
-  recognition = new SpeechRecognition();
-  recognition.lang = 'he-IL';
-  recognition.continuous = false;
-  recognition.interimResults = false;
+if(SpeechRecognition){
+ recognition=new SpeechRecognition();
+ recognition.lang='he-IL';
+ recognition.continuous=false;
+ recognition.interimResults=false;
 
-  recognition.onstart = () => {
-    $('coreWrap').classList.add('listening');
-    $('coreLabel').textContent = 'LISTENING...';
-    $('voiceStatus').textContent = 'LISTENING';
-    $('mic').textContent = '◉ LISTENING...';
-  };
+ recognition.onstart=()=>{
+  $('coreWrap').classList.add('listening');
+  $('coreLabel').textContent='LISTENING...';
+  $('voiceStatus').textContent='LISTENING';
+  $('mic').textContent='◉ LISTENING...';
+ };
 
-  recognition.onresult = event => {
-    $('command').value = event.results[0][0].transcript;
-    sendMessage();
-  };
+ recognition.onresult=event=>{
+  $('command').value=event.results[0][0].transcript;
+  sendMessage();
+ };
 
-  recognition.onerror = () => {
-    $('coreLabel').textContent = 'VOICE ERROR';
-  };
+ recognition.onerror=()=>{
+  $('coreLabel').textContent='VOICE ERROR';
+ };
 
-  recognition.onend = () => {
-    $('coreWrap').classList.remove('listening');
-    $('coreLabel').textContent = 'AWAITING COMMAND';
-    $('voiceStatus').textContent = 'STANDBY';
-    $('mic').textContent = '◉ ACTIVATE VOICE';
-  };
+ recognition.onend=()=>{
+  $('coreWrap').classList.remove('listening');
+  $('coreLabel').textContent='AWAITING COMMAND';
+  $('voiceStatus').textContent='STANDBY';
+  $('mic').textContent='◉ ACTIVATE VOICE';
+ };
+
+ $('mic').addEventListener('click',()=>{
+  try{
+   recognition.start();
+  }catch(e){
+   addMessage('המיקרופון כבר פעיל. נסה שוב בעוד רגע.','ai');
+  }
+ });
+}else{
+ $('mic').addEventListener('click',()=>{
+  addMessage('זיהוי קולי אינו נתמך בדפדפן הזה. נסה Chrome.','ai');
+ });
 }
 
-$('mic').addEventListener('click', () => {
-  if (!recognition) {
-    addMessage('זיהוי קולי אינו נתמך בדפדפן הזה. נסה לפתוח דרך Chrome.', 'ai');
-    return;
-  }
-  try {
-    recognition.start();
-  } catch (e) {
-    addMessage('המיקרופון כבר פעיל. נסה שוב בעוד רגע.', 'ai');
-  }
-});
 </script>
-  
-<script>
-const gravisOriginalSend = window.send;
-
-async function gravisConnectGroq(question) {
-  const response = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messages: [
-        {
-          role: "system",
-          content: "אתה GRAVIS, עוזר אישי חכם. ענה בעברית."
-        },
-        {
-          role: "user",
-          content: question
-        }
-      ]
-    })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || data.error || "Connection error");
-  }
-
-  return data.choices[0].message.content;
-}
-</script>
-</body>
 </body>
 </html>
